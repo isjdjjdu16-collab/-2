@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>향수공방 머뭄 | meomum</title>
+  <style>
+    :root {
+      --bg-warm: #FAF7F0; --bg-card: #FFFDF9; --yellow-soft: #FBF4DE; --wood-pale: #F1E9DC;
+      --wood-border: #E5DACB; --text-deep: #3B3127; --text-muted: #7C7164;
+      --yellow-point: #E1A73A; --yellow-hover: #C99026; --wood-dark: #2B231D;
+    }
+    html { scroll-behavior: smooth; }
+    html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; background-color: var(--bg-warm); color: var(--text-deep); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; letter-spacing: -0.01em; line-height: 1.65; }
+    * { box-sizing: border-box; }
+
+    /* ================= 헤더 및 메뉴 ================= */
+    header { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: rgba(250, 247, 240, 0); border-bottom: 1px solid rgba(255,255,255,0.2); z-index: 1000; transition: background 0.3s, border 0.3s; }
+    header.scrolled { background: rgba(250, 247, 240, 0.95); border-bottom: 1px solid var(--wood-border); }
+
+    .brand-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 1.7rem; font-weight: 600; letter-spacing: 0.08em; text-decoration: none; color: #fff; transition: color 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    header.scrolled .brand-logo { color: var(--text-deep); text-shadow: none; }
+
+    .menu-toggle-btn { position: absolute; left: 0; top: 0; width: 80px; height: 70px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; background: transparent; border: none; }
+    .hamburger-icon { width: 26px; height: 18px; position: relative; pointer-events: none; }
+    .hamburger-icon span { position: absolute; left: 0; width: 100%; height: 2px; background-color: #fff; border-radius: 2px; transition: background 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    header.scrolled .hamburger-icon span { background-color: var(--text-deep); box-shadow: none; }
+    .hamburger-icon span:nth-child(1) { top: 0; }
+    .hamburger-icon span:nth-child(2) { top: 8px; }
+    .hamburger-icon span:nth-child(3) { top: 16px; }
+
+    .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 2000; cursor: pointer; }
+    .side-menu-overlay.active { opacity: 1; visibility: visible; }
+    .side-menu { position: fixed; top: 0; left: -100%; width: 280px; height: 100vh; background: #FFFFFF; box-shadow: 5px 0 25px rgba(0,0,0,0.15); transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1); z-index: 2001; display: flex; flex-direction: column; }
+    .side-menu.active { left: 0; }
+    .side-menu-header { display: flex; justify-content: flex-end; align-items: center; height: 70px; padding: 0 10px; border-bottom: 1px solid #f0f0f0; }
+    .close-btn { width: 60px; height: 60px; font-size: 2rem; color: #999; cursor: pointer; display: flex; justify-content: center; align-items: center; background: transparent; border: none; }
+    .side-nav-list { list-style: none; padding: 10px 0; margin: 0; }
+    .side-nav-list li { border-bottom: 1px solid #f9f9f9; }
+    .side-nav-list a { display: block; padding: 24px 32px; font-size: 1.05rem; color: #333; text-decoration: none; letter-spacing: 0.05em; }
+
+    /* ================= 메인 슬라이더 (Home) ================= */
+    #home { position: relative; width: 100vw; height: 100vh; overflow: hidden; background-color: #000; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; animation: fade 15s infinite; }
+    .slide:nth-child(1) { background-image: url('IMG_3170.jpeg'); animation-delay: 0s; }
+    .slide:nth-child(2) { background-image: url('IMG_3171.jpeg'); animation-delay: 5s; }
+    .slide:nth-child(3) { background-image: url('IMG_3172.jpeg'); animation-delay: 10s; }
+    @keyframes fade { 0% { opacity: 0; transform: scale(1.05); } 10% { opacity: 1; transform: scale(1.03); } 33% { opacity: 1; transform: scale(1.01); } 43% { opacity: 0; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+
+    .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2; }
+    .hero-content { position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 24px; color: #fff; }
+    .hero-sub { font-size: 1rem; letter-spacing: 0.25em; color: var(--yellow-point); margin-bottom: 20px; font-weight: 600; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+    .hero-content h1 { font-size: 2.5rem; font-weight: 500; line-height: 1.4; margin-bottom: 24px; word-break: keep-all; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+    .hero-content p { font-size: 1.05rem; color: #eee; line-height: 1.8; margin-bottom: 42px; word-break: keep-all; font-weight: 300; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+    .hero-cta { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 15px 34px; font-size: 0.92rem; font-weight: 600; letter-spacing: 0.04em; text-decoration: none; border-radius: 4px; transition: all 0.2s; cursor: pointer; text-align: center; }
+    .btn-wood { background-color: var(--yellow-point); color: #ffffff; box-shadow: 0 4px 14px rgba(0,0,0,0.3); border: 1px solid var(--yellow-point); }
+    .btn-outline { border: 1px solid rgba(255,255,255,0.6); color: #fff; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
+
+    /* ================= 공통 섹션 스타일 ================= */
+    .section-wrapper { padding: 100px 24px 80px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .section-inner { max-width: 1080px; margin: 0 auto; width: 100%; }
+    .section-header { text-align: center; margin-bottom: 54px; }
+    .en-tag { font-size: 0.95rem; letter-spacing: 0.2em; color: var(--yellow-hover); display: block; margin-bottom: 8px; }
+    .section-header h2 { font-size: 2rem; font-weight: 600; color: var(--wood-dark); margin-bottom: 12px; }
+
+    /* ================= About ================= */
+    #about { background-color: var(--bg-card); }
+    .about-box { background: #FFFFFF; border: 1px solid var(--wood-border); border-radius: 12px; padding: 56px 40px; text-align: center; }
+    .about-quote { font-size: 1.45rem; font-style: italic; color: var(--yellow-hover); margin-bottom: 24px; }
+    .about-desc { max-width: 680px; margin: 0 auto; font-size: 1.05rem; color: var(--text-muted); line-height: 1.9; word-break: keep-all; }
+
+    /* ================= Class ================= */
+    #class { background-color: var(--bg-warm); }
+    .class-container { background: #FFFFFF; border: 1px solid var(--wood-border); border-radius: 12px; padding: 44px; }
+    .class-badge { display: inline-block; background: var(--yellow-soft); color: var(--yellow-hover); font-size: 0.8rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+    .class-summary { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--wood-border); padding-bottom: 24px; margin-bottom: 36px; flex-wrap: wrap; gap: 16px; }
+    .class-summary h3 { font-size: 1.6rem; margin: 0; }
+    .class-price { font-size: 1.7rem; font-weight: 700; color: var(--yellow-hover); }
+    .class-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; background: var(--yellow-soft); padding: 24px; border-radius: 8px; margin-bottom: 40px; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; }
+    .step-card { background: var(--bg-warm); border: 1px solid var(--wood-border); padding: 24px 20px; border-radius: 8px; text-align: center; }
+
+    /* ================= Reserve ================= */
+    #reserve { background-color: var(--bg-card); }
+    .reserve-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+    .reserve-card { background: #FFFFFF; border: 1px solid var(--wood-border); border-radius: 12px; padding: 38px 32px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .reserve-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--yellow-point); border-radius: 12px 12px 0 0; }
+    .info-list { list-style: none; margin: 0 0 30px 0; padding: 0; }
+    .info-list li { font-size: 0.94rem; margin-bottom: 12px; color: var(--text-muted); }
+    .info-list strong { color: var(--text-deep); display: inline-block; width: 78px; }
+    .btn-reserve { display: block; width: 100%; padding: 15px 0; text-align: center; text-decoration: none; border-radius: 4px; font-weight: bold; background: var(--yellow-point); color: #fff; }
+
+    /* ================= Review & Footer ================= */
+    #review { background-color: var(--bg-warm); }
+    .review-score-bar { text-align: center; background: #FFFFFF; border: 1px solid var(--wood-border); border-radius: 10px; padding: 24px; margin-bottom: 36px; }
+    .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .review-item { background: #FFFFFF; border: 1px solid var(--wood-border); border-radius: 8px; padding: 24px; font-size: 0.92rem; line-height: 1.7; color: var(--text-muted); }
+    .more-review-btn { display: block; width: 100%; max-width: 320px; margin: 40px auto 0; padding: 15px 0; text-align: center; font-weight: bold; background: #fff; border: 1px solid var(--wood-border); color: var(--text-deep); text-decoration: none; border-radius: 4px; }
+
+    footer { background: var(--wood-pale); border-top: 1px solid var(--wood-border); padding: 50px 24px; text-align: center; font-size: 0.86rem; color: var(--text-muted); }
+
+    @media (max-width: 768px) {
+      .hero-content h1 { font-size: 2.2rem; }
+      .class-container { padding: 24px; }
+      .section-wrapper { padding-top: 80px; min-height: auto; padding-bottom: 60px; }
+    }
+
+    /* Subpage Header Style */
+    body.subpage header { background: rgba(250, 247, 240, 0.95) !important; border-bottom: 1px solid var(--wood-border) !important; }
+    body.subpage .brand-logo { color: var(--text-deep) !important; text-shadow: none !important; }
+    body.subpage .hamburger-icon span { background-color: var(--text-deep) !important; box-shadow: none !important; }
+  </style>
+</head>
+<body class="subpage">
+
+  <!-- 공통 헤더 -->
+  <header id="mainHeader">
+    <button class="menu-toggle-btn" onclick="openMenuAction()">
+      <div class="hamburger-icon"><span></span><span></span><span></span></div>
+    </button>
+    <a href="index.html" class="brand-logo">meomum</a>
+  </header>
+
+  <!-- 슬라이드 메뉴 -->
+  <div class="side-menu-overlay" id="menuOverlay" onclick="closeMenuAction()"></div>
+  <nav class="side-menu" id="sideMenu">
+    <div class="side-menu-header"><button class="close-btn" onclick="closeMenuAction()">✕</button></div>
+    <ul class="side-nav-list">
+      <li><a href="about.html" onclick="closeMenuAction()">ABOUT US</a></li>
+      <li><a href="class.html" onclick="closeMenuAction()">CLASS</a></li>
+      <li><a href="reserve.html" onclick="closeMenuAction()">RESERVE</a></li>
+      <li><a href="review.html" onclick="closeMenuAction()">REVIEW</a></li>
+    </ul>
+  </nav>
+
+  <!-- 1. HOME 섹션 (풀스크린 슬라이드) -->
+
+
+  <!-- 2. ABOUT 섹션 -->
+
+
+  <!-- 3. CLASS 섹션 -->
+
+
+  <!-- 4. RESERVE 섹션 -->
+
+
+  <!-- 5. REVIEW 섹션 -->
+
+
+  <section id="review" class="section-wrapper">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="en-tag">Real Review</span>
+        <h2>방문객 이야기</h2>
+      </div>
+      <div class="review-score-bar">
+        <div style="color:var(--yellow-point); font-size:1.3rem; letter-spacing:2px;">★★★★★</div>
+        <p style="font-size: 1.15rem; font-weight: 700; margin: 6px 0 4px 0;">네이버 평점 4.98 / 5.0 (리뷰 1,800+)</p>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin:0;">수많은 연인과 친구들이 입을 모아 칭찬한 감각의 공간</p>
+      </div>
+      <div class="review-grid">
+        <div class="review-item">"성수동 데이트 코스로 다녀왔는데 공간 인테리어도 너무 따뜻하고 영상을 보며 제 페이스대로 만들 수 있어서 너무 좋았어요. 50ml 가성비 최고예요!"<div style="margin-top:14px; font-weight:600; color:var(--text-deep); font-size:0.85rem;">— 네이버 방문자 리뷰 (성수점)</div></div>
+        <div class="review-item">"친구랑 같이 우정 향수 만들러 갔는데 향료 종류가 많아서 나만의 시그니처 향 만들기에 딱이었습니다. 조향에 집중할 수 있는 분위기라 좋았어요."<div style="margin-top:14px; font-weight:600; color:var(--text-deep); font-size:0.85rem;">— 네이버 방문자 리뷰 (광주점)</div></div>
+        <div class="review-item">"조향 단계가 체계적이라 향알못도 영상만 보고 쉽게 따라할 수 있었어요. 성수역 4번 출구에서 가까워서 찾기도 너무 편했습니다."<div style="margin-top:14px; font-weight:600; color:var(--text-deep); font-size:0.85rem;">— 네이버 방문자 리뷰 (성수점)</div></div>
+      </div>
+      <a href="https://map.naver.com/p/search/%ED%96%A5%EC%88%98%EA%B3%B5%EB%B0%A9%20%EB%A8%B8%EB%AC%B4" target="_blank" class="more-review-btn">더 많은 네이버 리뷰 보러가기</a>
+    </div>
+  </section>
+
+  <!-- 푸터 -->
+  <footer>
+    <div style="font-size:1.3rem; font-weight:600; margin-bottom:12px; color:var(--text-deep);">meomum</div>
+    <p style="margin:0;">향수공방 머뭄 | Instagram: @meomum.perfume</p>
+    <p style="margin: 6px 0 0 0; font-size: 0.82rem;">
+      성수점: 서울 성동구 연무장7가길 4 3층 301호 | 광주점: 광주 동구 동계천로 143-17 2층<br />
+      E-mail: studio.meomum@gmail.com
+    </p>
+    <p style="margin-top: 14px; font-size: 0.78rem;">&copy; 2026 meomum. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // 햄버거 메뉴 열기/닫기
+    function openMenuAction() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
+    function closeMenuAction() { document.getElementById('sideMenu').classList.remove('active'); document.getElementById('menuOverlay').classList.remove('active'); }
+
+    // 스크롤 시 헤더 배경색 변경 (첫 화면 사진 위에서는 투명, 아래로 내리면 하얀 배경)
+    window.addEventListener('scroll', function() {
+      const header = document.getElementById('mainHeader');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>
